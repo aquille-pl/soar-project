@@ -3,6 +3,8 @@ from datetime import datetime
 from fastapi import FastAPI
 from pydantic import BaseModel, IPvAnyAddress
 
+from app.threat_intel import check_ip_reputation
+
 app = FastAPI(title="SOAR Incident Response")
 
 
@@ -16,8 +18,10 @@ class Incident(BaseModel):
 
 @app.post("/api/v1/incident")
 def receive_incident(incident: Incident):
+    reputation = check_ip_reputation(str(incident.source_ip))
     return {
         "status": "received",
         "source_ip": str(incident.source_ip),
         "alert_type": incident.alert_type,
+        "reputation": reputation,
     }
