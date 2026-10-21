@@ -5,6 +5,8 @@ from pydantic import BaseModel, IPvAnyAddress
 
 from app.threat_intel import check_ip_reputation
 
+from app.response import block_ip, decide
+
 app = FastAPI(title="SOAR Incident Response")
 
 
@@ -18,10 +20,15 @@ class Incident(BaseModel):
 
 @app.post("/api/v1/incident")
 def receive_incident(incident: Incident):
-    reputation = check_ip_reputation(str(incident.source_ip))
+    ip = str(incident.source_ip)
+    reputation = check_ip_reputation(ip)
+    decision = decide(ip, reputation)
+    action_result = block_ip(ip) if decision["action"] == "block" else None
     return {
-        "status": "received",
-        "source_ip": str(incident.source_ip),
+        "status": "processed",
+        "source_ip": ip,
         "alert_type": incident.alert_type,
         "reputation": reputation,
+        "decision": decision,
+        "action_result": action_result,
     }
