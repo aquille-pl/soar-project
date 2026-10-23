@@ -4,6 +4,8 @@ import os
 
 from dotenv import load_dotenv
 
+from app.blockers import get_blocker
+
 load_dotenv()
 
 logger = logging.getLogger("soar")
@@ -32,9 +34,12 @@ def decide(ip: str, reputation: dict) -> dict:
 
 
 def block_ip(ip: str) -> dict:
-    """Placeholder for the real firewall / AWS Security Group call."""
     if DRY_RUN:
         logger.info("[DRY RUN] would block %s", ip)
         return {"executed": False, "mode": "dry_run"}
-    logger.info("[MOCK] blocking %s", ip)
-    return {"executed": True, "mode": "mock"}
+    try:
+        result = get_blocker().block(ip)
+    except Exception as exc:  # a failed block must not crash the webhook
+        logger.exception("block failed for %s", ip)
+        return {"executed": False, "mode": "error", "error": exc.__class__.__name__}
+    return {"mode": "live", **result}

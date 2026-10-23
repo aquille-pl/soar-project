@@ -7,8 +7,10 @@ from app.threat_intel import check_ip_reputation
 
 from app.response import block_ip, decide
 
-app = FastAPI(title="SOAR Incident Response")
+from app.db import init_db, list_incidents, save_incident
 
+app = FastAPI(title="SOAR Incident Response")
+init_db()
 
 class Incident(BaseModel):
     source_ip: IPvAnyAddress
@@ -24,11 +26,18 @@ def receive_incident(incident: Incident):
     reputation = check_ip_reputation(ip)
     decision = decide(ip, reputation)
     action_result = block_ip(ip) if decision["action"] == "block" else None
+    incident_id = save_incident(incident, reputation, decision, action_result)
     return {
         "status": "processed",
+        "incident_id": incident_id,
         "source_ip": ip,
         "alert_type": incident.alert_type,
         "reputation": reputation,
         "decision": decision,
         "action_result": action_result,
     }
+
+
+@app.get("/api/v1/incidents")
+def get_incidents(limit: int = 50):
+    return list_incidents(limit)
