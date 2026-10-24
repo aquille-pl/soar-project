@@ -13,7 +13,7 @@ def expire_due_blocks() -> int:
     count = 0
     for block in due_blocks():
         try:
-            get_blocker().unblock(block["ip"])
+            get_blocker(block["backend"]).unblock(block["ip"])
             mark_block(block["id"], "expired")
             count += 1
             logger.info("Expired block on %s", block["ip"])
