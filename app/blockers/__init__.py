@@ -6,9 +6,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-@lru_cache(maxsize=1)
-def get_blocker():
-    backend = os.getenv("BLOCKER", "mock").lower()
+@lru_cache(maxsize=None)
+def get_blocker(backend: str | None = None):
+    backend = (backend or os.getenv("BLOCKER", "mock")).lower()
     if backend == "azure_nsg":
         from app.blockers.azure_nsg import AzureNsgBlocker
 
