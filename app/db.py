@@ -1,9 +1,9 @@
 import json
+import os
 import sqlite3
 from datetime import UTC, datetime, timedelta
 
-DB_PATH = "incidents.db"
-
+DB_PATH = os.getenv("SOAR_DB_PATH", "incidents.db")
 
 def _now() -> datetime:
     return datetime.now(UTC).replace(microsecond=0)
