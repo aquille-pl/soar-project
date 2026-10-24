@@ -12,6 +12,7 @@ logger = logging.getLogger("soar")
 logging.basicConfig(level=logging.INFO)
 
 BLOCK_THRESHOLD = int(os.getenv("BLOCK_THRESHOLD", "75"))
+BLOCK_TTL_MINUTES = int(os.getenv("BLOCK_TTL_MINUTES", "1440"))
 DRY_RUN = os.getenv("DRY_RUN", "true").lower() == "true"
 ALLOWLIST = [n.strip() for n in os.getenv("ALLOWLIST", "").split(",") if n.strip()]
 
