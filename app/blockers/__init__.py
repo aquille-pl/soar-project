@@ -1,5 +1,5 @@
 import os
-from functools import cache, lru_cache
+from functools import cache
 
 from dotenv import load_dotenv
 
