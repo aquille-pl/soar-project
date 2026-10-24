@@ -9,7 +9,8 @@ certifi==2026.10.19
 cffi==2.1.1
 charset-normalizer==3.5.2
 click==8.5.0
-cryptography==48.0.1
+# Patched version required (known CVEs in 48.x). Intel Mac has no wheels for 49+, so local dev venvs may stay on 48.x.
+cryptography>=50.0.0
 fastapi==0.156.8
 h11==0.16.0
 httpcore==1.0.9
