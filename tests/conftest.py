@@ -52,7 +52,7 @@ def anon():
 @pytest.fixture
 def fake_blocker(monkeypatch):
     blocker = FakeBlocker()
-    getter = lambda backend=None: blocker  # noqa: E731
+    getter = lambda backend=None: blocker
     monkeypatch.setattr(app.response, "get_blocker", getter)
     monkeypatch.setattr(app.main, "get_blocker", getter)
     monkeypatch.setattr(app.expiry, "get_blocker", getter)

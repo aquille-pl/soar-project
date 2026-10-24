@@ -1,12 +1,12 @@
 import os
-from functools import lru_cache
+from functools import cache, lru_cache
 
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
-@lru_cache(maxsize=None)
+@cache
 def get_blocker(backend: str | None = None):
     backend = (backend or os.getenv("BLOCKER", "mock")).lower()
     if backend == "azure_nsg":
